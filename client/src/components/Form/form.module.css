@@ -33,7 +33,7 @@
 }
 
 .submit {
-	@apply h-11 m-2 rounded-md px-3 w-max border text-lg m-0 transition hover:bg-green-400 border-gray-900 m-auto w-full flex;
+	@apply h-11 mt-5 rounded-md px-3 w-max border text-lg m-0 transition hover:bg-green-400 border-gray-900 m-auto w-full flex;
 	background: #ecf1f9;
 	border: 1px solid #ecf1f9;
 }
@@ -41,4 +41,12 @@
 .right,
 .img {
 	@apply hidden md:flex m-0 rounded-r-md flex-1;
+}
+
+.progress {
+	@apply w-full h-5 bg-gray-300 mt-5;
+	line-height: 18px;
+}
+.bar {
+	@apply h-full bg-blue-500 text-center text-gray-900;
 }

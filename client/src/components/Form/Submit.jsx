@@ -3,9 +3,11 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import formImage from './form.png';
 import styles from './form.module.css';
+import { useEffect, useState } from 'react';
 
 const Submit = () => {
 	const history = useHistory();
+	const [progress, setProgress] = useState(null);
 	const onSubmit = (values) => {
 		const data = new FormData();
 		data.append('name', values.name);
@@ -14,13 +16,25 @@ const Submit = () => {
 		data.append('thumb', values.thumb);
 		data.append('video', values.video);
 		axios
-			.post('http://localhost:5000/form', data)
+			.post('http://localhost:5000/form', data, {
+				onUploadProgress: (ProgressEvent) => {
+					setProgress(
+						parseInt(
+							Math.round(
+								(ProgressEvent.loaded * 100) /
+									ProgressEvent.total
+							)
+						)
+					);
+				},
+			})
 			.then((res) => {
 				console.log(res.data);
 				history.push('/info');
 			})
 			.then((err) => console.log(err));
 	};
+	useEffect(() => console.log('this is progress >>>', progress), [progress]);
 	const initialValues = {
 		name: '',
 		release: '',
@@ -56,6 +70,7 @@ const Submit = () => {
 					<h1 className={styles.head}>SUBMIT YOUR MOVIE</h1>
 					<Formik
 						initialValues={initialValues}
+						enableReinitialize={true}
 						onSubmit={onSubmit}
 						validate={validate}>
 						{(props) => (
@@ -162,6 +177,15 @@ const Submit = () => {
 							</form>
 						)}
 					</Formik>
+					{progress && (
+						<div className={styles.progress}>
+							<div
+								className={styles.bar}
+								style={{ width: `${progress}%` }}>
+								{progress}%
+							</div>
+						</div>
+					)}
 				</div>
 				<div className={styles.right}>
 					<img
