@@ -15,8 +15,12 @@
 	@apply text-2xl font-bold w-full mb-5 text-center text-blue-500;
 }
 
+.label {
+	@apply mt-5 m-1 text-gray-800;
+}
+
 .input {
-	@apply h-11 my-2 rounded-md p-3 mt-6 w-full text-gray-800 placeholder-gray-700 max-w-full;
+	@apply h-11 my-2 rounded-md p-3 w-full text-gray-800 placeholder-gray-700 max-w-full font-light;
 	background: #ecf1f9;
 }
 
