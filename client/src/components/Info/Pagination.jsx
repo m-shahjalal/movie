@@ -1,65 +1,113 @@
-import React, { useContext, useState } from 'react';
-import prev from '../../images/004-left-arrow.png';
-import next from '../../images/003-right-arrow.png';
+import React, { useEffect, useState } from 'react';
+import styles from './info.module.css';
 
-const Pagination = () => {
-	const {
-		qString,
-		currentPage,
-		pageHandler,
-		pageSubmitHandler,
-		totalResult,
-		prevHandler,
-		nextHandler,
-	} = useContext;
-
+const Pagination = ({ totalPage, urlGenerator }) => {
+	const [error, setError] = useState(null);
 	const [isEditable, setIsEditable] = useState(false);
-	const totalPage = Math.floor(totalResult / 7 + 1);
-	console.log(totalPage);
+	const [inputValue, setInputValue] = useState('');
+	const [current, setCurrent] = useState(1);
+
+	useEffect(() => urlGenerator(current), [current, urlGenerator]);
+
+	const pageChangeHandler = (e) => {
+		const value = e.target.value;
+		if (isNaN(value)) {
+			setError('Only Number acceptable');
+		} else if (value > totalPage) {
+			setError(`Type within 1 to ${totalPage}`);
+		} else {
+			setError(null);
+			setInputValue(e.target.value);
+		}
+	};
+	console.log(error);
+	const pageSubmitHandler = (e) => {
+		e.preventDefault();
+		if (!error) {
+			setCurrent(inputValue);
+			setIsEditable(!isEditable);
+		} else {
+			console.log('please solve the error first');
+		}
+	};
 
 	return (
-		<div className='pagination'>
+		<div className={styles.pagination}>
 			<button
-				onClick={prevHandler}
-				className={qString.page === 1 ? 'mute' : ''}
-				disabled={qString.page === 1}>
-				<img src={prev} alt='' /> <span> Previous</span>
+				onClick={() => {
+					if (current > 1) {
+						return setCurrent((priv) => parseInt(priv) - 1);
+					} else {
+						return;
+					}
+				}}
+				className={styles.button}>
+				<svg
+					className='w-6 h-6'
+					fill='none'
+					stroke='currentColor'
+					viewBox='0 0 24 24'
+					xmlns='http://www.w3.org/2000/svg'>
+					<path
+						strokeLinecap='round'
+						strokeLinejoin='round'
+						strokeWidth={2}
+						d='M7 16l-4-4m0 0l4-4m-4 4h18'
+					/>
+				</svg>{' '}
+				<span className={styles.span}> Previous</span>
 			</button>
 			<div
-				className='pagination-indicator'
+				className={styles.paginationIndicator}
 				onDoubleClick={() => setIsEditable(!isEditable)}>
 				{isEditable ? (
 					<form onSubmit={pageSubmitHandler}>
 						<input
-							className='pagination-input'
-							type='number'
-							placeholder='Type and press enter'
+							className={styles.paginationInput}
+							type='text'
+							placeholder={`Max number is ${totalPage}`}
 							min='1'
 							max={totalPage}
 							onDoubleClick={() => setIsEditable(!isEditable)}
-							value={currentPage}
-							onChange={pageHandler}
+							value={inputValue}
+							onChange={pageChangeHandler}
 						/>
+						{error ? (
+							<div className={styles.error}>{error}</div>
+						) : null}
 					</form>
 				) : (
-					<h5>
-						<p>
-							{qString.page} of {totalPage || 1} page
-						</p>
-						<small>Dabble click to enter the page number</small>
+					<h5 className={styles.pageHead}>
+						{current} of {totalPage || 1} page
+						<div className={styles.small}>
+							Dabble click to enter the page number
+						</div>
 					</h5>
 				)}
 			</div>
 			<button
-				onClick={nextHandler}
-				className={
-					qString.page.toString() === totalPage.toString()
-						? 'mute'
-						: ''
-				}
-				disabled={qString.page.toString() === totalPage.toString()}>
-				<span>Next </span>
-				<img src={next} alt='' />
+				onClick={() => {
+					if (current < totalPage) {
+						return setCurrent((priv) => parseInt(priv) + 1);
+					} else {
+						return;
+					}
+				}}
+				className={styles.button}>
+				<span className={styles.span}>Next </span>
+				<svg
+					className='w-6 h-6'
+					fill='none'
+					stroke='currentColor'
+					viewBox='0 0 24 24'
+					xmlns='http://www.w3.org/2000/svg'>
+					<path
+						strokeLinecap='round'
+						strokeLinejoin='round'
+						strokeWidth={2}
+						d='M17 8l4 4m0 0l-4 4m4-4H3'
+					/>
+				</svg>
 			</button>
 		</div>
 	);

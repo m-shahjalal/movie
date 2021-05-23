@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import axios from 'axios';
 import formImage from './form.png';
 import styles from './form.module.css';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 
 const Submit = () => {
 	const history = useHistory();
@@ -34,7 +34,6 @@ const Submit = () => {
 			})
 			.then((err) => console.log(err));
 	};
-	useEffect(() => console.log('this is progress >>>', progress), [progress]);
 	const initialValues = {
 		name: '',
 		release: '',
